@@ -131,6 +131,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Orderbook.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Aliases.h" />
+    <ClInclude Include="LevelInfo.h" />
+    <ClInclude Include="Order.h" />
+    <ClInclude Include="Orderbook.h" />
+    <ClInclude Include="OrderbookLevelInfos.h" />
+    <ClInclude Include="OrderModify.h" />
+    <ClInclude Include="OrderType.h" />
+    <ClInclude Include="Side.h" />
+    <ClInclude Include="Trade.h" />
+    <ClInclude Include="TradeInfo.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
