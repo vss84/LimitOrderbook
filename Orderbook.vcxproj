@@ -135,6 +135,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Aliases.h" />
+    <ClInclude Include="Constants.h" />
     <ClInclude Include="LevelInfo.h" />
     <ClInclude Include="Order.h" />
     <ClInclude Include="Orderbook.h" />
