@@ -7,6 +7,7 @@
 #include "OrderType.h"
 #include "Side.h"
 #include "Aliases.h"
+#include "Constants.h"
 
 /**
 * @brief Order objects will contain properties such as orderType, orderId, side, price and quantity.
