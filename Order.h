@@ -55,5 +55,5 @@ private:
 
 // Note(vss): can be stored in a orders dictionary and a bid/ask dictionary
 using OrderPointer = std::shared_ptr<Order>;
-// TODO(vss): use std::vector
+// TODO(vss): try std::vector
 using OrderPointers = std::list<OrderPointer>;
