@@ -204,6 +204,24 @@ Trades Orderbook::AddOrder(OrderPointer order)
 		return { };
 	}
 
+	if (order->GetOrderType() == OrderType::Market)
+	{
+		if (order->GetSide() == Side::Buy && !asks_.empty())
+		{
+			const auto& [worstAsk, _] = *asks_.rbegin();
+			order->ToGoodTillCancel(worstAsk);
+		}
+		else if (order->GetSide() == Side::Sell && !bids_.empty())
+		{
+			const auto& [worstBid, _] = *bids_.rbegin();
+			order->ToGoodTillCancel(worstBid);
+		}
+		else
+		{
+			return { };
+		}
+	}
+
 	if (order->GetOrderType() == OrderType::FillAndKill && !CanMatch(order->GetSide(), order->GetPrice()))
 	{
 		return { };
@@ -219,13 +237,13 @@ Trades Orderbook::AddOrder(OrderPointer order)
 	{
 		auto& orders = bids_[order->GetPrice()];
 		orders.push_back(order);
-		iterator = std::next(orders.begin(), orders.size() - 1);
+		iterator = std::prev(orders.end());
 	}
 	else
 	{
 		auto& orders = asks_[order->GetPrice()];
 		orders.push_back(order);
-		iterator = std::next(orders.begin(), orders.size() - 1);
+		iterator = std::prev(orders.end());
 	}
 
 	orders_.try_emplace(order->GetOrderId(), order, iterator);
