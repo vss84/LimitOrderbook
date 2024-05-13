@@ -158,12 +158,12 @@ bool Orderbook::CanFullyFill(Side side, Price price, Quantity quantity) const
 
 	if (side == Side::Buy)
 	{
-		const auto [askPrice, _] = *asks_.begin();
+		const auto& [askPrice, _] = *asks_.begin();
 		threshold = askPrice;
 	}
 	else
 	{
-		const auto [bidPrice, _] = *bids_.begin();
+		const auto& [bidPrice, _] = *bids_.begin();
 		threshold = bidPrice;
 	}
 
@@ -247,6 +247,7 @@ Trades Orderbook::AddOrder(OrderPointer order)
 	}
 
 	orders_.try_emplace(order->GetOrderId(), order, iterator);
+
 	OnOrderAdded(order);
 
 	return MatchOrders();
@@ -361,12 +362,15 @@ Trades Orderbook::MatchOrders()
 		auto& [bidPrice, bids] = *bids_.begin();
 		auto& [askPrice, asks] = *asks_.begin();
 
-		if (bidPrice < askPrice) { break; }
+		if (bidPrice < askPrice) 
+		{ 
+			break; 
+		}
 
 		while (bids.size() && asks.size())
 		{
-			auto const& bid = bids.front();
-			auto const& ask = asks.front();
+			auto bid = bids.front();
+			auto ask = asks.front();
 
 			Quantity quantity = std::min(bid->GetRemainingQuantity(), ask->GetRemainingQuantity());
 
@@ -385,18 +389,21 @@ Trades Orderbook::MatchOrders()
 				orders_.erase(ask->GetOrderId());
 			}
 
-			if (bids.empty())
-			{
-				bids_.erase(bidPrice);
-			}
-
-			if (asks.empty())
-			{
-				asks_.erase(askPrice);
-			}
-
 			trades.emplace_back(TradeInfo{ bid->GetOrderId(), bid->GetPrice(), quantity },
-				TradeInfo{ ask->GetOrderId(), ask->GetPrice(), quantity });
+								TradeInfo{ ask->GetOrderId(), ask->GetPrice(), quantity });
+
+			OnOrderMatched(bid->GetPrice(), quantity, bid->IsFilled());
+			OnOrderMatched(ask->GetPrice(), quantity, ask->IsFilled());
+		}
+		
+		if (bids.empty())
+		{
+			bids_.erase(bidPrice);
+		}
+
+		if (asks.empty())
+		{
+			asks_.erase(askPrice);
 		}
 	}
 
